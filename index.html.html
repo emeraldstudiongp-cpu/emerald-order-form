@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emerald Studio - Delivery Details</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff;
+}
+
+.blur {
+    filter: blur(6px);
+    pointer-events: none;
+}
+
+.header {
+    text-align: center;
+    padding: 25px 10px 5px 10px;
+}
+
+.brand-name {
+    font-size: 34px;
+    font-weight: bold;
+    color: #0f5e4d;
+    letter-spacing: 1px;
+}
+
+.service-note {
+    color: #c0392b;
+    font-size: 14px;
+    margin-top: 6px;
+}
+
+.container {
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
+    background-color: #ffffff;
+}
+
+h2 {
+    text-align: center;
+    color: #0f5e4d;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    padding: 11px;
+    margin: 6px 0 15px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #0f5e4d;
+    outline: none;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+button {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    border: none;
+}
+
+.submit-btn {
+    background-color: #0f5e4d;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #0c4d3f;
+}
+
+.reset-btn {
+    background-color: #dddddd;
+}
+
+.reset-btn:hover {
+    background-color: #bbbbbb;
+}
+
+/* Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
+}
+
+.popup-box h3 {
+    color: #0f5e4d;
+    margin-bottom: 10px;
+}
+
+.popup-box p {
+    font-size: 14px;
+    color: #333;
+}
+
+.popup-box .order-id {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #0f5e4d;
+}
+
+.popup-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.popup-buttons button {
+    flex: 1;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.whatsapp-btn {
+    background-color: #25D366;
+    color: white;
+}
+
+.close-btn {
+    background-color: #0f5e4d;
+    color: white;
+}
+
+.whatsapp-btn:hover {
+    background-color: #1ebe5d;
+}
+
+.close-btn:hover {
+    background-color: #0c4d3f;
+}
+
+@media (max-width: 600px) {
+    .container {
+        margin: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="mainContent">
+
+<div class="header">
+    <div class="brand-name">Emerald Studio</div>
+    <div class="service-note">
+        Delivering only within Nagpur, Maharashtra.
+    </div>
+</div>
+
+<div class="container">
+    <h2>Delivery Information</h2>
+
+    <form onsubmit="return submitForm()">
+
+        <label>Full Name *</label>
+        <input type="text" id="name" required>
+
+        <label>Phone Number (10 digits) *</label>
+        <input type="tel" id="phone" maxlength="10" required>
+
+        <label>Flat / House No., Building, Apartment *</label>
+        <input type="text" id="flat" required>
+
+        <label>Area, Street, Sector *</label>
+        <input type="text" id="area" required>
+
+        <label>Landmark (Optional)</label>
+        <input type="text" id="landmark">
+
+        <label>Pincode (6 digits) *</label>
+        <input type="text" id="pincode" maxlength="6" required>
+
+        <div class="button-group">
+            <button type="submit" class="submit-btn">Submit</button>
+            <button type="reset" class="reset-btn">Reset</button>
+        </div>
+
+    </form>
+</div>
+
+</div>
+
+<!-- Popup -->
+<div class="popup-overlay" id="popup">
+    <div class="popup-box">
+        <h3>✔ Details Received</h3>
+        <p>
+            Thank you for sharing your delivery details 💎<br>
+            Your order request has been successfully recorded.
+        </p>
+
+        <div class="order-id" id="orderDisplay"></div>
+
+        <p style="margin-top:10px;">
+            You may now return to WhatsApp to continue your order.
+        </p>
+
+        <div class="popup-buttons">
+            <button class="close-btn" onclick="closePopup()">Stay Here</button>
+            <button class="whatsapp-btn" onclick="goToWhatsApp()">Back to WhatsApp</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let generatedOrderId = "";
+
+function submitForm() {
+
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let flat = document.getElementById("flat").value;
+    let area = document.getElementById("area").value;
+    let landmark = document.getElementById("landmark").value;
+    let pincode = document.getElementById("pincode").value;
+
+    if (!/^[0-9]{10}$/.test(phone)) {
+        alert("Phone number must be exactly 10 digits.");
+        return false;
+    }
+
+    if (!/^[0-9]{6}$/.test(pincode)) {
+        alert("Pincode must be exactly 6 digits.");
+        return false;
+    }
+
+    generatedOrderId = "EM" + Date.now().toString().slice(-6);
+
+    let formData = {
+        orderId: generatedOrderId,
+        name: name,
+        phone: phone,
+        flat: flat,
+        area: area,
+        landmark: landmark,
+        pincode: pincode
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbzqHGcsdpXsO0vKnpwR7_lg-nngLsESvnlhyiHJQjQ2s7UwUq0cI82ZulqtP2SMlAeD4g/exec", {
+        method: "POST",
+        body: JSON.stringify(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+
+        document.getElementById("orderDisplay").innerHTML =
+            "Order ID: " + generatedOrderId;
+
+        document.getElementById("popup").style.display = "flex";
+        document.getElementById("mainContent").classList.add("blur");
+
+    })
+    .catch(error => {
+        alert("Something went wrong while saving data.");
+    });
+
+    return false;
+}
+</script>
+
+</body>
+</html>
