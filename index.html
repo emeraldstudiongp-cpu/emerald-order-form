@@ -214,7 +214,7 @@ button {
         <input type="text" id="pincode" maxlength="6" required>
 
         <div class="button-group">
-            <button type="submit" class="submit-btn">Submit</button>
+            <button type="submit" id="submitBtn">Submit</button>
             <button type="reset" class="reset-btn">Reset</button>
         </div>
 
@@ -247,8 +247,17 @@ button {
 
 <script>
 let generatedOrderId = "";
+    let whatsappLink = "";
+let isSubmitting = false;
 
 function submitForm() {
+
+    if (isSubmitting) return false;
+    isSubmitting = true;
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting... Please wait";
 
     let name = document.getElementById("name").value;
     let phone = document.getElementById("phone").value;
@@ -259,11 +268,17 @@ function submitForm() {
 
     if (!/^[0-9]{10}$/.test(phone)) {
         alert("Phone number must be exactly 10 digits.");
+        submitBtn.disabled = false;
+submitBtn.innerText = "Submit";
+isSubmitting = false;
         return false;
     }
 
     if (!/^[0-9]{6}$/.test(pincode)) {
         alert("Pincode must be exactly 6 digits.");
+        submitBtn.disabled = false;
+submitBtn.innerText = "Submit";
+isSubmitting = false;
         return false;
     }
 
@@ -286,20 +301,52 @@ function submitForm() {
     .then(response => response.json())
     .then(data => {
 
-        document.getElementById("orderDisplay").innerHTML =
-            "Order ID: " + generatedOrderId;
+    // Create WhatsApp message
+    let message =
+        "Order ID: " + generatedOrderId + "%0A" +
+        "Name: " + name + "%0A" +
+        "Phone: " + phone + "%0A" +
+        "Address: " + flat + ", " + area + "%0A" +
+        "Landmark: " + landmark + "%0A" +
+        "Pincode: " + pincode;
 
-        document.getElementById("popup").style.display = "flex";
-        document.getElementById("mainContent").classList.add("blur");
+    whatsappLink = "https://wa.me/918767709387?text=" + message;
 
-    })
+    document.getElementById("orderDisplay").innerHTML =
+        "Order ID: " + generatedOrderId;
+
+    document.getElementById("popup").style.display = "flex";
+    document.getElementById("mainContent").classList.add("blur");
+
+})
     .catch(error => {
         alert("Something went wrong while saving data.");
     });
 
     return false;
 }
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("mainContent").classList.remove("blur");
+
+    // reset button after closing
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit";
+    isSubmitting = false;
+}
+
+function goToWhatsApp() {
+    window.location.href = whatsappLink;
+
+    // reset form state
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = false;
+    submitBtn.innerText = "Submit";
+    isSubmitting = false;
+}
 </script>
 
 </body>
 </html>
+
