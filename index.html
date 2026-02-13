@@ -247,7 +247,7 @@ button {
 
 <script>
 let generatedOrderId = "";
-    let whatsappLink = "";
+let whatsappLink = "";
 let isSubmitting = false;
 
 function submitForm() {
@@ -266,19 +266,21 @@ function submitForm() {
     let landmark = document.getElementById("landmark").value;
     let pincode = document.getElementById("pincode").value;
 
+    // Phone validation
     if (!/^[0-9]{10}$/.test(phone)) {
         alert("Phone number must be exactly 10 digits.");
         submitBtn.disabled = false;
-submitBtn.innerText = "Submit";
-isSubmitting = false;
+        submitBtn.innerText = "Submit";
+        isSubmitting = false;
         return false;
     }
 
+    // Pincode validation
     if (!/^[0-9]{6}$/.test(pincode)) {
         alert("Pincode must be exactly 6 digits.");
         submitBtn.disabled = false;
-submitBtn.innerText = "Submit";
-isSubmitting = false;
+        submitBtn.innerText = "Submit";
+        isSubmitting = false;
         return false;
     }
 
@@ -301,35 +303,41 @@ isSubmitting = false;
     .then(response => response.json())
     .then(data => {
 
-    // Create WhatsApp message
-    let message =
-        "Order ID: " + generatedOrderId + "%0A" +
-        "Name: " + name + "%0A" +
-        "Phone: " + phone + "%0A" +
-        "Address: " + flat + ", " + area + "%0A" +
+        // Professional WhatsApp message
+        let message =
+        "Hi Emerald Studio 💚%0A%0A" +
+        "I’ve submitted my order details successfully.%0A%0A" +
+        "📦 Order ID: " + generatedOrderId + "%0A%0A" +
+        "📍 Delivery Details:%0A" +
+        flat + ", " + area + "%0A" +
         "Landmark: " + landmark + "%0A" +
-        "Pincode: " + pincode;
+        "Pincode: " + pincode + "%0A%0A" +
+        "Please confirm my order.%0A%0A" +
+        "⚠️ Please do not edit the above details. Just send to confirm.";
 
-    whatsappLink = "https://wa.me/918767709387?text=" + message;
+        whatsappLink = "https://wa.me/918767709387?text=" + message;
 
-    document.getElementById("orderDisplay").innerHTML =
-        "Order ID: " + generatedOrderId;
+        document.getElementById("orderDisplay").innerHTML =
+            "Order ID: " + generatedOrderId;
 
-    document.getElementById("popup").style.display = "flex";
-    document.getElementById("mainContent").classList.add("blur");
+        document.getElementById("popup").style.display = "flex";
+        document.getElementById("mainContent").classList.add("blur");
 
-})
+    })
     .catch(error => {
         alert("Something went wrong while saving data.");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit";
+        isSubmitting = false;
     });
 
     return false;
 }
+
 function closePopup() {
     document.getElementById("popup").style.display = "none";
     document.getElementById("mainContent").classList.remove("blur");
 
-    // reset button after closing
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = false;
     submitBtn.innerText = "Submit";
@@ -339,14 +347,13 @@ function closePopup() {
 function goToWhatsApp() {
     window.location.href = whatsappLink;
 
-    // reset form state
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.disabled = false;
     submitBtn.innerText = "Submit";
     isSubmitting = false;
 }
 </script>
-
 </body>
 </html>
+
 
