@@ -239,9 +239,10 @@ button {
         </p>
 
         <div class="popup-buttons">
-            <button class="close-btn" onclick="closePopup()">Stay Here</button>
-            <button class="whatsapp-btn" onclick="goToWhatsApp()">Back to WhatsApp</button>
-        </div>
+    <button class="whatsapp-btn" onclick="goToWhatsApp()" style="width:100%;">
+        Continue to WhatsApp
+    </button>
+</div>
     </div>
 </div>
 
@@ -334,16 +335,6 @@ function submitForm() {
     return false;
 }
 
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
-    document.getElementById("mainContent").classList.remove("blur");
-
-    const submitBtn = document.getElementById("submitBtn");
-    submitBtn.disabled = false;
-    submitBtn.innerText = "Submit";
-    isSubmitting = false;
-}
-
 function goToWhatsApp() {
     window.location.href = whatsappLink;
 
@@ -355,5 +346,6 @@ function goToWhatsApp() {
 </script>
 </body>
 </html>
+
 
 
